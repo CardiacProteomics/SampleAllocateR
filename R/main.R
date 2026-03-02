@@ -1558,6 +1558,11 @@ allocate_samples <- function(data,
   names(data)[names(data) == id_column] <- "sample_id"
   data$sample_id <- as.character(data$sample_id)
 
+  if (anyDuplicated(data$sample_id) > 0) {
+    stop(sprintf("id_column '%s' contains duplicate values. Each sample must have a unique identifier.",
+                 id_column))
+  }
+
   # Check if covariates and are valid column names
   data_columns <- names(data)
   if (!all(covariates %in% data_columns)) {
