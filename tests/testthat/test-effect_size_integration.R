@@ -16,32 +16,33 @@ test_that("calculate_balance_score with balance_type='effect_size' but no effect
   )
 })
 
-test_that("calculate_effect_sizes returns correct structure", {
-  set.seed(123)
-  toy_data <- simulate_data(n_samples = 60, block_size = 1)
-  toy_data <- toy_data[, c("sample_id", "age_at_baseline", "bmi_at_baseline", "sex")]
+for (shape in names(covariate_shapes)) {
+  test_that(paste("calculate_effect_sizes returns correct structure:", shape), {
+    set.seed(123)
+    covariates <- covariate_shapes[[shape]]
+    toy_data <- simulate_data(n_samples = 60, block_size = 1)[, c("sample_id", covariates)]
 
-  # Create a simple allocation
-  toy_data$batch_allocation <- factor(rep(1:5, each = 12))
+    # Create a simple allocation
+    toy_data$batch_allocation <- factor(rep(1:5, each = 12))
 
-  result <- calculate_effect_sizes(
-    layout = toy_data,
-    blocking_variable = NULL
-  )
+    result <- calculate_effect_sizes(
+      layout = toy_data,
+      blocking_variable = NULL
+    )
 
-  # Check structure
-  expect_true(is.data.frame(result))
-  expect_true("covariate" %in% names(result))
-  expect_true("effect_size" %in% names(result))
+    # Check structure
+    expect_true(is.data.frame(result))
+    expect_true("covariate" %in% names(result))
+    expect_true("effect_size" %in% names(result))
 
-  # Check that it detected all covariates (excluding sample_id and batch_allocation)
-  expected_covariates <- c("age_at_baseline", "bmi_at_baseline", "sex")
-  expect_equal(sort(result$covariate), sort(expected_covariates))
+    # Check that it detected all covariates (excluding sample_id and batch_allocation)
+    expect_setequal(result$covariate, covariates)
 
-  # Check effect sizes are numeric and in valid range
-  expect_true(all(is.numeric(result$effect_size)))
-  expect_true(all(result$effect_size >= 0 & result$effect_size <= 1, na.rm = TRUE))
-})
+    # Check effect sizes are numeric and in valid range
+    expect_true(all(is.numeric(result$effect_size)))
+    expect_true(all(result$effect_size >= 0 & result$effect_size <= 1, na.rm = TRUE))
+  })
+}
 
 test_that("calculate_effect_sizes excludes blocking variable and padding samples", {
   set.seed(123)

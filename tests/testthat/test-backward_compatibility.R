@@ -1,28 +1,30 @@
 # Backward Compatibility Tests
 # Ensure that old code still works with the new balance_type parameter
 
-test_that("allocate_samples without balance_type defaults to p_value mode", {
-  set.seed(123)
-  toy_data <- simulate_data(n_samples = 60, block_size = 1)
-  toy_data <- toy_data[, c("sample_id", "age_at_baseline", "bmi_at_baseline", "sex")]
+for (shape in names(covariate_shapes)) {
+  test_that(paste("allocate_samples without balance_type defaults to p_value mode:", shape), {
+    set.seed(123)
+    covariates <- covariate_shapes[[shape]]
+    toy_data <- simulate_data(n_samples = 60, block_size = 1)[, c("sample_id", covariates)]
 
-  # Call without specifying balance_type (old API)
-  result <- allocate_samples(
-    data = toy_data,
-    method = "random",
-    covariates = c("age_at_baseline", "bmi_at_baseline", "sex"),
-    batch_size = 12,
-    seed = 123
-  )
+    # Call without specifying balance_type (old API)
+    result <- allocate_samples(
+      data = toy_data,
+      method = "random",
+      covariates = covariates,
+      batch_size = 12,
+      seed = 123
+    )
 
-  # Check result structure
-  expect_true("layout" %in% names(result))
-  expect_true("results" %in% names(result))
+    # Check result structure
+    expect_true("layout" %in% names(result))
+    expect_true("results" %in% names(result))
 
-  # Should have both p_value and effect_size columns
-  expect_true("p_value" %in% names(result$results))
-  expect_true("effect_size" %in% names(result$results))
-})
+    # Should have both p_value and effect_size columns
+    expect_true("p_value" %in% names(result$results))
+    expect_true("effect_size" %in% names(result$results))
+  })
+}
 
 test_that("calculate_balance_score with just p_values vector (old API) still works", {
   # Old API: just pass a vector of p_values
