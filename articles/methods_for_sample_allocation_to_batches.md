@@ -29,6 +29,7 @@ First, we generate some simulated data with covariates. We will generate
 of 13.
 
 ``` r
+
 toy_data = simulate_data(n_samples = 98, block_size = 2)
 
 head(toy_data)
@@ -68,6 +69,7 @@ We can simply generate a random layout of our toy dataset of 98 samples
 to a batch size of 13 as follows:
 
 ``` r
+
 single_layout = allocate_samples(toy_data,
                                  batch_size = 13,
                                  covariates = c("age_at_baseline", "bmi_at_baseline", "sex"),
@@ -114,6 +116,7 @@ sections). This metric is in the range \[0, 1\], with higher values
 indicating better balance.
 
 ``` r
+
 calculate_balance_score(single_layout[['results']]$p_value)
 #> [1] 0.5169404
 ```
@@ -132,6 +135,7 @@ function includes a random seed for reproducibility, and so here we
 explicitly set a series of different random seeds.
 
 ``` r
+
 set.seed(123)
 random_seeds <- sample(1:10000, 1000, replace = FALSE)
 
@@ -157,6 +161,7 @@ plot_data_age_at_baseline <- do.call(rbind, probability_age_at_baseline)
 ```
 
 ``` r
+
 # plot histrogram of probability that age_at_baseline does not differ between the batches
 plot_data_age_at_baseline %>%
   ggplot(aes(x = p_value)) +
@@ -182,6 +187,7 @@ random layouts shows that there are few layouts with high score that
 indicate they are well balanced across all covariates.
 
 ``` r
+
 balance_score <- lapply(seq_along(results_list), function(i) {
   data.frame(
     iteration_number = i,
@@ -209,6 +215,7 @@ differ from that we have generated above). Here, we generate 1000 random
 layouts and then select the one with the best balance of the covariates.
 
 ``` r
+
 best_random_layout = allocate_samples(toy_data, 
                                  batch_size = 13, 
                                  covariates = c("age_at_baseline", "bmi_at_baseline", "sex"),
@@ -246,6 +253,7 @@ above. On the other side of the coin, there are still many possible
 layouts that have superior balance.
 
 ``` r
+
 calculate_balance_score(best_random_layout[['results']]$p_value)
 #> [1] 0.9100344
 ```
@@ -267,6 +275,7 @@ be explicitly specified using the argument
 `method = "simulated_annealing"`).
 
 ``` r
+
 optimal_layout = allocate_samples(toy_data, 
                                  batch_size = 13, 
                                  covariates = c("age_at_baseline", "bmi_at_baseline", "sex"),
@@ -294,6 +303,7 @@ Accordingly, we also achieve a more balanced configuration than that of
 the best random layout.
 
 ``` r
+
 calculate_balance_score(optimal_layout[['results']]$p_value)
 #> [1] 0.9971285
 ```
@@ -302,6 +312,7 @@ We can also compare the run time of the simulated annealing algorithm to
 that of the best random layout.
 
 ``` r
+
 # rerun best_random_layout to calculate run time
 runtime_brute_force <- system.time({
   best_random_layout <- allocate_samples(toy_data, 
@@ -365,6 +376,7 @@ We also implement functionality to block samples within batches by a
 specified variable as follows:
 
 ``` r
+
 optimal_layout_blocked = allocate_samples(toy_data, 
                                  batch_size = 13, 
                                  covariates = c("age_at_baseline", "bmi_at_baseline", "sex"),
@@ -391,6 +403,7 @@ In order to easily get an overview of the balance of a particular layout
 levels of covariates across the batches.
 
 ``` r
+
 plot_layout(optimal_layout_blocked, covariates = c("age_at_baseline", "bmi_at_baseline", "sex"))
 #> $continuous
 ```
@@ -418,6 +431,7 @@ Here we modify our toy example to miss some samples from certain
 subjects.
 
 ``` r
+
 # randomly remove some samples
 toy_data_with_unequal_blocks <- toy_data %>%
   slice(-sample(1:nrow(.), 12))
@@ -445,6 +459,7 @@ In this case, we nonetheless find a highly balanced layout. Once again,
 we can plot an overview of the covariates across the different batches.
 
 ``` r
+
 plot_layout(optimal_layout_unequal_blocks, covariates = c("age_at_baseline", "bmi_at_baseline", "sex"))
 #> $continuous
 ```
@@ -459,10 +474,11 @@ plot_layout(optimal_layout_unequal_blocks, covariates = c("age_at_baseline", "bm
 ## session info
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.2 (2025-10-31)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.3 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -481,18 +497,18 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ggplot2_4.0.2         dplyr_1.2.0           SampleAllocateR_1.0.0
+#> [1] ggplot2_4.0.3         dplyr_1.2.1           SampleAllocateR_1.0.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.5.2     tidyselect_1.2.1  
-#>  [5] tidyr_1.3.2        jquerylib_0.1.4    systemfonts_1.3.1  scales_1.4.0      
-#>  [9] textshaping_1.0.4  yaml_2.3.12        fastmap_1.2.0      R6_2.6.1          
+#>  [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.6.1     tidyselect_1.2.1  
+#>  [5] tidyr_1.3.2        jquerylib_0.1.4    systemfonts_1.3.2  scales_1.4.0      
+#>  [9] textshaping_1.0.5  yaml_2.3.12        fastmap_1.2.0      R6_2.6.1          
 #> [13] labeling_0.4.3     generics_0.1.4     knitr_1.51         tibble_3.3.1      
-#> [17] desc_1.4.3         bslib_0.10.0       pillar_1.11.1      RColorBrewer_1.1-3
-#> [21] rlang_1.1.7        cachem_1.1.0       xfun_0.56          fs_1.6.6          
-#> [25] sass_0.4.10        S7_0.2.1           cli_3.6.5          withr_3.0.2       
-#> [29] pkgdown_2.2.0      magrittr_2.0.4     digest_0.6.39      grid_4.5.2        
-#> [33] lifecycle_1.0.5    vctrs_0.7.1        evaluate_1.0.5     glue_1.8.0        
-#> [37] farver_2.1.2       ragg_1.5.0         purrr_1.2.1        rmarkdown_2.30    
-#> [41] tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.9
+#> [17] desc_1.4.3         bslib_0.12.0       pillar_1.11.1      RColorBrewer_1.1-3
+#> [21] rlang_1.3.0        cachem_1.1.0       xfun_0.60          fs_2.1.0          
+#> [25] sass_0.4.10        S7_0.2.2           otel_0.2.0         cli_3.6.6         
+#> [29] withr_3.0.3        pkgdown_2.2.1      magrittr_2.0.5     digest_0.6.39     
+#> [33] grid_4.6.1         lifecycle_1.0.5    vctrs_0.7.3        evaluate_1.0.5    
+#> [37] glue_1.8.1         farver_2.1.2       ragg_1.5.2         purrr_1.2.2       
+#> [41] rmarkdown_2.31     tools_4.6.1        pkgconfig_2.0.3    htmltools_0.5.9
 ```

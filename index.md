@@ -14,6 +14,7 @@ is available, although for best results please run locally.
 To install the latest version:
 
 ``` r
+
 # if required, install remotes package
 install.packages("remotes")
 
@@ -32,6 +33,7 @@ In order to generate a layout with the optimal balance of covariates
 between experimental batches:
 
 ``` r
+
 optimal_layout_blocked = allocate_samples(toy_data, 
                                  batch_size = 13, 
                                  covariates = c("covariate1", "covariate2", "covariate3"),
@@ -50,11 +52,13 @@ As a simple sanity check, the values of the covariates can be visualised
 using the `plot_layout` function:
 
 ``` r
+
 plot_layout(optimal_layout_blocked, covariates = c("covariate1", "covariate2", "covariate3"))
 ```
 
 The allocated layout can be saved to file, for example by:
 
 ``` r
+
 write.csv(optimal_layout_blocked[["layout"]], "optimal_layout.csv", row.names = FALSE)
 ```
