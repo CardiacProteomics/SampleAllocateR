@@ -1784,8 +1784,10 @@ plot_layout <- function(output, id_column = "sample_id", covariates = NULL) {
   layout = layout %>%
     dplyr::select({{id_column}}, batch_allocation, all_of(covariates))
 
-  continuous_vars <- layout %>% dplyr::select(where(is.numeric)) %>% names()
-  categorical_vars <- layout %>% dplyr::select(where(is.factor)) %>% names()
+  # classify the covariates only: batch_allocation is itself a factor, and
+  # id_column may be numeric, so neither can be typed out of the full layout
+  continuous_vars <- covariates[sapply(layout[covariates], is.numeric)]
+  categorical_vars <- covariates[sapply(layout[covariates], is.factor)]
 
   # Initialize list to store plots
   plots <- list()
@@ -1794,8 +1796,8 @@ plot_layout <- function(output, id_column = "sample_id", covariates = NULL) {
   if(length(continuous_vars) > 0) {
     continuous_plot = layout %>%
       dplyr::filter(!grepl("padding", .data[[id_column]])) %>%
-      dplyr::select(where(is.numeric) | {{id_column}}, batch_allocation) %>%
-      tidyr::pivot_longer(cols = !c({{id_column}}, batch_allocation), names_to = "covariate", values_to = "value") %>%
+      dplyr::select({{id_column}}, batch_allocation, all_of(continuous_vars)) %>%
+      tidyr::pivot_longer(cols = all_of(continuous_vars), names_to = "covariate", values_to = "value") %>%
       ggplot2::ggplot(ggplot2::aes(x = batch_allocation, y = value)) +
       ggplot2::geom_jitter() +
       ggplot2::facet_wrap(~ covariate, scales = "free_y") +
@@ -1808,8 +1810,8 @@ plot_layout <- function(output, id_column = "sample_id", covariates = NULL) {
   if(length(categorical_vars) > 0) {
     categorical_plot = layout %>%
       dplyr::filter(!grepl("padding", .data[[id_column]])) %>%
-      dplyr::select(where(is.factor) | {{id_column}}, batch_allocation) %>%
-      tidyr::pivot_longer(cols = !c({{id_column}}, batch_allocation), names_to = "covariate", values_to = "value") %>%
+      dplyr::select({{id_column}}, batch_allocation, all_of(categorical_vars)) %>%
+      tidyr::pivot_longer(cols = all_of(categorical_vars), names_to = "covariate", values_to = "value") %>%
       droplevels() %>%
       dplyr::group_by(covariate, value, batch_allocation) %>%
       dplyr::summarise(n = n(), .groups = "drop") %>%
