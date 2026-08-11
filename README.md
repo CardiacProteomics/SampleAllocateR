@@ -5,7 +5,7 @@
 
 This repository contains the **SampleAllocateR** package: a tool designed to optimally allocate samples with known covariates to experimental batches. 
 
-For more information about the method, please see our [preprint on bioRxiv](https://doi.org/10.1101/2025.03.21.644523).
+For more information about the method, please see our [article in Bioinformatics Advances](https://doi.org/10.1093/bioadv/vbag048).
 
 A basic [shiny application](https://m8abun-john-mulvey.shinyapps.io/sample_allocation/) is available, although for best results please run locally.
 

@@ -1,0 +1,14 @@
+citHeader("To cite SampleAllocateR in publications, please use:")
+
+bibentry(
+  bibtype = "Article",
+  title = "Covariate balanced allocation of samples to batches to mitigate the impacts of technical variability",
+  author = c(person("John F", "Mulvey"),
+             person("Alicia", "Lundby")),
+  journal = "Bioinformatics Advances",
+  year = "2026",
+  volume = "6",
+  number = "1",
+  pages = "vbag048",
+  doi = "10.1093/bioadv/vbag048"
+)
