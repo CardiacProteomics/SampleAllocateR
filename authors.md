@@ -7,14 +7,18 @@
 
 ## Citation
 
-Mulvey J (2026). *SampleAllocateR: Covariate Balanced Allocation of
-Preselected Samples to Experimental Batches*. R package version 1.0.0,
-<https://john-mulvey.github.io/SampleAllocateR/>.
+Mulvey J, Lundby A (2026). “Covariate balanced allocation of samples to
+batches to mitigate the impacts of technical variability.”
+*Bioinformatics Advances*, **6**(1), vbag048.
+[doi:10.1093/bioadv/vbag048](https://doi.org/10.1093/bioadv/vbag048).
 
-    @Manual{,
-      title = {SampleAllocateR: Covariate Balanced Allocation of Preselected Samples to Experimental Batches},
-      author = {John Mulvey},
+    @Article{,
+      title = {Covariate balanced allocation of samples to batches to mitigate the impacts of technical variability},
+      author = {John F Mulvey and Alicia Lundby},
+      journal = {Bioinformatics Advances},
       year = {2026},
-      note = {R package version 1.0.0},
-      url = {https://john-mulvey.github.io/SampleAllocateR/},
+      volume = {6},
+      number = {1},
+      pages = {vbag048},
+      doi = {10.1093/bioadv/vbag048},
     }
